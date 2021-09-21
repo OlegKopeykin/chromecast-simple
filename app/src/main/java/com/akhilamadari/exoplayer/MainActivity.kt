@@ -27,11 +27,16 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity() {
+
     private lateinit var castPlayer: CastPlayer
     private var player: SimpleExoPlayer? = null
-    val videoString = "http://cbsnewshd-lh.akamaihd.net/i/CBSNHD_7@199302/index_700_av-p.m3u8"
+    //val urlYoAlex1 = "https://cdn.dev.yomobile.xyz/test/hls/7eaea027-4d44-4057-b8d7-2a5c04fad573/master.m3u8"
+    //val urlYoAlex2 = "https://cdn.dev.yomobile.xyz/test/hls/bc786434-e5c2-430a-a028-3726057b367b/master.m3u8"
+    val urlAlexYo3Last = "https://cdn.dev.yomobile.xyz/test/hls/c35ce4c4-d8a9-49ea-98a3-b98f99d4b8d4/master.m3u8"
+    val urlGoodWork1 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/hls/GoogleIO-2014-MakingGoogleCastReadyAppsDiscoverable.m3u8"
+    val urlGoodWork2 = "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8"
+    val videoString = urlGoodWork1
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -102,8 +107,6 @@ class MainActivity : AppCompatActivity() {
                 or View.SYSTEM_UI_FLAG_HIDE_NAVIGATION)
     }
 
-
-
     private fun initPlayer() {
         player = ExoPlayerFactory.newSimpleInstance(
                 requireNotNull(this),
@@ -120,7 +123,6 @@ class MainActivity : AppCompatActivity() {
             }
             override fun onCastSessionUnavailable(){
               //  = viewModel.onCastingStateChanged(false, castPlayer.currentPosition)
-
             }
         })
 
