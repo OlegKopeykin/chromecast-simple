@@ -27,16 +27,13 @@ import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity() {
 
+class MainActivity : AppCompatActivity() {
     private lateinit var castPlayer: CastPlayer
     private var player: SimpleExoPlayer? = null
-    //val urlYoAlex1 = "https://cdn.dev.yomobile.xyz/test/hls/7eaea027-4d44-4057-b8d7-2a5c04fad573/master.m3u8"
-    //val urlYoAlex2 = "https://cdn.dev.yomobile.xyz/test/hls/bc786434-e5c2-430a-a028-3726057b367b/master.m3u8"
-    val urlBadWork = "https://cdn.dev.yomobile.xyz/test/hls/c35ce4c4-d8a9-49ea-98a3-b98f99d4b8d4/master.m3u8"
-    val urlGoodWork1 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/hls/GoogleIO-2014-MakingGoogleCastReadyAppsDiscoverable.m3u8"
-    val urlGoodWork2 = "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8"
-    val videoString = urlBadWork
+
+    val videoStringYO = "https://cdn.dev.yomobile.xyz/test/hls/c35ce4c4-d8a9-49ea-98a3-b98f99d4b8d4/master.m3u8"
+    val videoString = videoStringYO
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +42,7 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         invalidateOptionsMenu()
+        CastContext.getSharedInstance(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -56,7 +54,7 @@ class MainActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem?): Boolean {
         if (item?.getItemId() == android.R.id.home) {
-           Log.e("helooo","pressed")
+            Log.e("helooo","pressed")
         }
         return super.onOptionsItemSelected(item)
     }
@@ -108,20 +106,21 @@ class MainActivity : AppCompatActivity() {
 
     private fun initPlayer() {
         player = ExoPlayerFactory.newSimpleInstance(
-                requireNotNull(this),
-                DefaultTrackSelector().apply {
-                    parameters = disableClosedCaptionParams()
-                })
+            requireNotNull(this),
+            DefaultTrackSelector().apply {
+                parameters = disableClosedCaptionParams()
+            })
 
         epvVideo.player = player
         castPlayer = CastPlayer(CastContext.getSharedInstance(this))
+
         castPlayer.setSessionAvailabilityListener(object : CastPlayer.SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
-                Log.d("TestCastLog", "onCastSessionAvailable")
                 castPlayer.loadItem(buildMediaQueueItem(videoString),0)
             }
             override fun onCastSessionUnavailable(){
-                Log.d("TestCastLog", "onCastSessionUnavailable")
+                //  = viewModel.onCastingStateChanged(false, castPlayer.currentPosition)
+
             }
         })
 
@@ -131,6 +130,7 @@ class MainActivity : AppCompatActivity() {
         val hlsMediaSourceFactory = HlsMediaSource.Factory(hlsDataSourceFactory)
         val hlsMediaSource = hlsMediaSourceFactory.createMediaSource(uri)
 
+
         player?.prepare(hlsMediaSource)
         player?.playWhenReady = true
         player?.seekTo(0)
@@ -138,20 +138,19 @@ class MainActivity : AppCompatActivity() {
     }
     private fun buildMediaQueueItem(video :String): MediaQueueItem {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, "Title")
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, "CBSN News")
         val mediaInfo = MediaInfo.Builder(Uri.parse(video).toString())
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-                .setContentType(MimeTypes.APPLICATION_M3U8)
-                .setMetadata(movieMetadata).build()
+            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+            .setContentType(MimeTypes.APPLICATION_M3U8)
+            .setMetadata(movieMetadata).build()
         return MediaQueueItem.Builder(mediaInfo).build()
     }
     private fun disableClosedCaptionParams() = DefaultTrackSelector.ParametersBuilder()
-            .setRendererDisabled(TRACK_TEXT, true)
-            .clearSelectionOverrides()
-            .build()
+        .setRendererDisabled(TRACK_TEXT, true)
+        .clearSelectionOverrides()
+        .build()
 
     companion object {
-        // TODO Determine why 2. Reference: https://stackoverflow.com/questions/42432371/how-to-turn-on-off-closed-captions-in-hls-streaming-url-in-exoplayer
         private const val TRACK_TEXT = 2
     }
 

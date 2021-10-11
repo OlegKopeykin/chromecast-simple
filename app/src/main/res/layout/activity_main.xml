@@ -5,31 +5,26 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context="com.akhilamadari.exoplayer.MainActivity">
-    <android.support.design.widget.AppBarLayout
-        android:id="@+id/my_toolbar1"
-        android:layout_marginTop="4dp"
+
+    <android.support.v7.widget.Toolbar
+        android:id="@+id/my_toolbar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
+        android:background="?attr/colorPrimary"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-        <android.support.v7.widget.Toolbar
-            android:id="@+id/my_toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:background="@color/colorPrimary"
-            app:popupTheme="@color/colorPrimary"
-            android:theme="@style/AppTheme.AppBarOverlay"/>
-
-    </android.support.design.widget.AppBarLayout>
+        app:layout_constraintTop_toTopOf="parent"
+        android:elevation="4dp"
+        android:theme="@style/ThemeOverlay.AppCompat.ActionBar"
+        app:popupTheme="@style/ThemeOverlay.AppCompat.Light"/>
 
     <com.google.android.exoplayer2.ui.SimpleExoPlayerView
         android:id="@+id/epvVideo"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:layout_marginVertical="60dp"
+        android:layout_marginHorizontal="16dp"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="@+id/my_toolbar1"/>
+        app:layout_constraintBottom_toBottomOf="@+id/my_toolbar"/>
 
 </android.support.constraint.ConstraintLayout>
