@@ -2,16 +2,15 @@ package com.akhilamadari.exoplayer
 
 import android.net.Uri
 import android.os.Bundle
-import android.provider.MediaStore
-import android.support.v7.app.AppCompatActivity
-import android.support.v7.widget.Toolbar
 import android.view.Menu
 import android.view.MenuItem
 import android.view.View
-import com.google.android.exoplayer2.ExoPlayer
-import com.google.android.exoplayer2.ExoPlayerFactory
+import androidx.appcompat.app.AppCompatActivity
+import androidx.appcompat.widget.Toolbar
+import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.google.android.exoplayer2.ext.cast.CastPlayer
+import com.google.android.exoplayer2.ext.cast.SessionAvailabilityListener
 import com.google.android.exoplayer2.source.hls.DefaultHlsDataSourceFactory
 import com.google.android.exoplayer2.source.hls.HlsMediaSource
 import com.google.android.exoplayer2.trackselection.DefaultTrackSelector
@@ -20,9 +19,6 @@ import com.google.android.exoplayer2.util.Log
 import com.google.android.exoplayer2.util.MimeTypes
 import com.google.android.exoplayer2.util.Util
 import com.google.android.exoplayer2.util.Util.getUserAgent
-import com.google.android.gms.cast.MediaInfo
-import com.google.android.gms.cast.MediaMetadata
-import com.google.android.gms.cast.MediaQueueItem
 import com.google.android.gms.cast.framework.CastButtonFactory
 import com.google.android.gms.cast.framework.CastContext
 import kotlinx.android.synthetic.main.activity_main.*
@@ -52,7 +48,7 @@ class MainActivity : AppCompatActivity() {
         return true
     }
 
-    override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
         if (item?.getItemId() == android.R.id.home) {
             Log.e("helooo","pressed")
         }
@@ -105,18 +101,13 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun initPlayer() {
-        player = ExoPlayerFactory.newSimpleInstance(
-            requireNotNull(this),
-            DefaultTrackSelector().apply {
-                parameters = disableClosedCaptionParams()
-            })
-
+        player = SimpleExoPlayer.Builder(this).build()
         epvVideo.player = player
         castPlayer = CastPlayer(CastContext.getSharedInstance(this))
 
-        castPlayer.setSessionAvailabilityListener(object : CastPlayer.SessionAvailabilityListener {
+        castPlayer.setSessionAvailabilityListener(object : SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
-                castPlayer.loadItem(buildMediaQueueItem(videoString),0)
+                castPlayer.setMediaItem(buildMediaQueueItem(videoString),0)
             }
             override fun onCastSessionUnavailable(){
                 //  = viewModel.onCastingStateChanged(false, castPlayer.currentPosition)
@@ -136,14 +127,21 @@ class MainActivity : AppCompatActivity() {
         player?.seekTo(0)
 
     }
-    private fun buildMediaQueueItem(video :String): MediaQueueItem {
-        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, "CBSN News")
-        val mediaInfo = MediaInfo.Builder(Uri.parse(video).toString())
-            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
-            .setContentType(MimeTypes.APPLICATION_M3U8)
-            .setMetadata(movieMetadata).build()
-        return MediaQueueItem.Builder(mediaInfo).build()
+    private fun buildMediaQueueItem(video :String): MediaItem {
+
+        return MediaItem.Builder()
+            //.setMediaMetadata(com.google.android.exoplayer2.MediaMetadata()
+            .setMimeType(MimeTypes.APPLICATION_M3U8)
+            .setUri(Uri.parse(video))
+            .build()
+
+//        val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
+//        movieMetadata.putString(MediaMetadata.KEY_TITLE, "CBSN News")
+//        val mediaInfo = MediaInfo.Builder(Uri.parse(video).toString())
+//            .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+//            .setContentType(MimeTypes.APPLICATION_M3U8)
+//            .setMetadata(movieMetadata).build()
+//        return MediaQueueItem.Builder(mediaInfo).build()
     }
     private fun disableClosedCaptionParams() = DefaultTrackSelector.ParametersBuilder()
         .setRendererDisabled(TRACK_TEXT, true)
