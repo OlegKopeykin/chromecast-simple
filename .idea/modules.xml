@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
-      <module fileurl="file://$PROJECT_DIR$/cast/cast.iml" filepath="$PROJECT_DIR$/cast/cast.iml" />
-      <module fileurl="file://$PROJECT_DIR$/exoplayer-demo-master.iml" filepath="$PROJECT_DIR$/exoplayer-demo-master.iml" />
-      <module fileurl="file://$PROJECT_DIR$/.idea/exoplayer-stage1.iml" filepath="$PROJECT_DIR$/.idea/exoplayer-stage1.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/exoplayer-cast33.iml" filepath="$PROJECT_DIR$/.idea/modules/exoplayer-cast33.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/app/exoplayer-cast33.app.iml" filepath="$PROJECT_DIR$/.idea/modules/app/exoplayer-cast33.app.iml" />
     </modules>
   </component>
 </project>

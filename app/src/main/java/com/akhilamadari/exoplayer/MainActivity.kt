@@ -33,10 +33,10 @@ class MainActivity : AppCompatActivity() {
     private var player: SimpleExoPlayer? = null
     //val urlYoAlex1 = "https://cdn.dev.yomobile.xyz/test/hls/7eaea027-4d44-4057-b8d7-2a5c04fad573/master.m3u8"
     //val urlYoAlex2 = "https://cdn.dev.yomobile.xyz/test/hls/bc786434-e5c2-430a-a028-3726057b367b/master.m3u8"
-    val urlAlexYo3Last = "https://cdn.dev.yomobile.xyz/test/hls/c35ce4c4-d8a9-49ea-98a3-b98f99d4b8d4/master.m3u8"
+    val urlBadWork = "https://cdn.dev.yomobile.xyz/test/hls/c35ce4c4-d8a9-49ea-98a3-b98f99d4b8d4/master.m3u8"
     val urlGoodWork1 = "https://commondatastorage.googleapis.com/gtv-videos-bucket/CastVideos/hls/GoogleIO-2014-MakingGoogleCastReadyAppsDiscoverable.m3u8"
     val urlGoodWork2 = "https://storage.googleapis.com/shaka-demo-assets/angel-one-hls/hls.m3u8"
-    val videoString = urlGoodWork1
+    val videoString = urlBadWork
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         supportActionBar?.setDisplayShowHomeEnabled(true)
         invalidateOptionsMenu()
-        CastContext.getSharedInstance(this)
     }
 
     override fun onCreateOptionsMenu(menu: Menu): Boolean {
@@ -116,13 +115,13 @@ class MainActivity : AppCompatActivity() {
 
         epvVideo.player = player
         castPlayer = CastPlayer(CastContext.getSharedInstance(this))
-
         castPlayer.setSessionAvailabilityListener(object : CastPlayer.SessionAvailabilityListener {
             override fun onCastSessionAvailable() {
+                Log.d("TestCastLog", "onCastSessionAvailable")
                 castPlayer.loadItem(buildMediaQueueItem(videoString),0)
             }
             override fun onCastSessionUnavailable(){
-              //  = viewModel.onCastingStateChanged(false, castPlayer.currentPosition)
+                Log.d("TestCastLog", "onCastSessionUnavailable")
             }
         })
 
@@ -132,7 +131,6 @@ class MainActivity : AppCompatActivity() {
         val hlsMediaSourceFactory = HlsMediaSource.Factory(hlsDataSourceFactory)
         val hlsMediaSource = hlsMediaSourceFactory.createMediaSource(uri)
 
-
         player?.prepare(hlsMediaSource)
         player?.playWhenReady = true
         player?.seekTo(0)
@@ -140,9 +138,10 @@ class MainActivity : AppCompatActivity() {
     }
     private fun buildMediaQueueItem(video :String): MediaQueueItem {
         val movieMetadata = MediaMetadata(MediaMetadata.MEDIA_TYPE_MOVIE)
-        movieMetadata.putString(MediaMetadata.KEY_TITLE, "CBSN News")
+        movieMetadata.putString(MediaMetadata.KEY_TITLE, "Title")
         val mediaInfo = MediaInfo.Builder(Uri.parse(video).toString())
-                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED).setContentType(MimeTypes.APPLICATION_M3U8)
+                .setStreamType(MediaInfo.STREAM_TYPE_BUFFERED)
+                .setContentType(MimeTypes.APPLICATION_M3U8)
                 .setMetadata(movieMetadata).build()
         return MediaQueueItem.Builder(mediaInfo).build()
     }
